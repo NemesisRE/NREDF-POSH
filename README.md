@@ -2,6 +2,8 @@
 
 ## Manual Installation
 
+1. Checkout the repository into your profile directory
+
 1. Add the following snippet at the top of your profile
 
     ```powershell
@@ -19,6 +21,8 @@ Run the following snippet
 
 ```powershell
 $PROFILE_PATH = (Get-Item $PROFILE).Directory
+cd $PROFILE_PATH
+git clone "https://github.com/NemesisRE/NREDF-POSH.git"
 $PROFILE_CONTENT = Get-Content $PROFILE
 '# Load NRE Dotfiles
 ${PROFILE_PATH} = (Get-Item $PROFILE).Directory
