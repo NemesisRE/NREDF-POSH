@@ -1,50 +1,34 @@
-. "${NREDF_PATH}\Sources.ps1"
-
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-
-# Update and Load Modules or install if necessary
-NREDF_LoadModules $MODULES
-
-# Set Powershell Theme
-if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-  oh-my-posh init pwsh --config "$ENV:POSH_THEMES_PATH\$POSH_THEME_FILE" | Invoke-Expression
+. "${NREDF_PATH}\Defaults.ps1"
+. "${NREDF_PATH}\Aliases.ps1"
+if (Test-Path "${PROFILE_PATH}\Aliases.ps1") {
+  . "${PROFILE_PATH}\Aliases.ps1"
 }
-
-# Set PSReadLine options
-Set-PSReadLineOption -PredictionSource History
-
-# Set Keyhandlers
-#Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-if ( ${isWindows} ) {
-  Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-GuiCompletion }
-} elseif ( ${isLinux} ) {
-  Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion -CaseInsensitive }
+. "${NREDF_PATH}\Modules.ps1"
+if (Test-Path "${PROFILE_PATH}\Modules.ps1") {
+  . "${PROFILE_PATH}\Modules.ps1"
 }
-Set-PSReadLineKeyHandler -Key Ctrl+d -Function ViExit
-Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-Set-PSReadLineKeyHandler -Key Alt+d -Function ShellKillWord
-Set-PSReadLineKeyHandler -Key Alt+Backspace -Function ShellBackwardKillWord
-Set-PSReadLineKeyHandler -Key Alt+q -ScriptBlock { NREDF_SaveInHistory }
-
-# Produce UTF-8 by default
-# https://news.ycombinator.com/item?id=12991690
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-
-# https://technet.microsoft.com/en-us/magazine/hh241048.aspx
-$MaximumHistoryCount = 10000;
-
-# PSFzf settings
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
-
-# Register Completions
-Register-PSKubeContextComplete
+Get-ChildItem -Path "${NREDF_PATH}\Functions" -Filter '*.ps1' | ForEach-Object {
+  . $_.FullName
+}
+if (Test-Path "${PROFILE_PATH}\Functions") {
+  Get-ChildItem -Path "${PROFILE_PATH}\Functions" -Filter '*.ps1' | ForEach-Object {
+    . $_.FullName
+  }
+}
+Get-ChildItem -Path "${NREDF_PATH}\Completions" -Filter '*.ps1' | ForEach-Object {
+  . $_.FullName
+}
+if (Test-Path "${PROFILE_PATH}\Completions") {
+  Get-ChildItem -Path "${PROFILE_PATH}\Completions" -Filter '*.ps1' | ForEach-Object {
+    . $_.FullName
+  }
+}
 
 # SIG # Begin signature block
 # MIIbiwYJKoZIhvcNAQcCoIIbfDCCG3gCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUTxKuya9XypNgzn8Gojm6wkw6
-# A06gghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhrnstGgYj9n19ZxstEq5Tdcs
+# vpWgghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
 # AQsFADAVMRMwEQYDVQQDDApOUkVERi1QT1NIMB4XDTI0MDcxOTEwMDE0NVoXDTI1
 # MDcxOTEwMjE0NVowFTETMBEGA1UEAwwKTlJFREYtUE9TSDCCASIwDQYJKoZIhvcN
 # AQEBBQADggEPADCCAQoCggEBAOl2MdANwTlf5vc2DArt9tpjFrS2pAvRQDMrTMxx
@@ -165,27 +149,27 @@ Register-PSKubeContextComplete
 # BgNVBAMMCk5SRURGLVBPU0gCEB9E/6a7V/SJRXU6SM+Lp/AwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFB2mv5AkFVQoc+CVaiU2KdRSnmK3MA0GCSqGSIb3DQEBAQUABIIBAHVwvUMz
-# 6PRNTF0RRdpinTCoxyS3wekRIL04m1caWKJ/We3CmXvAiPadV3TOq7tsK32RirdQ
-# yz2o0fw3MPQBni6J9i4Dvc7bYNr2s5hZMirL6jLtpnJevGtuRjAl4Ims3Fc5o884
-# XcvbKy5tNpxcsYYne7/DFjUlg+rPWn3xiCrbMUzHup3TLDC45P+mNBtagddM1G36
-# 9QXtvpy42lGYkRCwv+Q1DIKrzmc4ufgc8nT74maFupqpDyDTAVzYUwIPEyR/SD+7
-# prL3oAIWeF2S+oaM+SNlhHzmUAu19AAeo5kLyU2aKKbh1LdgM7enINB1bnmqUtX6
-# updw50hvcUJqJCuhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
+# MRYEFOKKmaNJy2QmQOb/tR6s70OAB4jGMA0GCSqGSIb3DQEBAQUABIIBAMMy2f+3
+# YSvd/mA+WupliwYC594xQVVOEBQIusmvPKOsImYO/ULvqzN8EvRrwRDIrv2/OXSp
+# v8Za5LtzVxbAJVA0GVb7RwHFQeVDScaMttjmeNmGWCtnhw5nWb4IDYrJbPGM6Oiz
+# YRcH46/CUPCoJRYI62gqkJVd4mgG/HMhmo9YQd3FBj/vExkMLctAuYdWZjBELqtZ
+# a3C8NwV4ng1I6pR6+m0tQJ9SqnLODzCwguf4TlR4njwjvYT7MCd8g/97K1Nk4niZ
+# 7ODfjri2hwv2wcvHpYDU+G7xEGpPV+i/yvYa6KcdzfmwcVv6dkbrmO9BXCvZIvmx
+# l+bk5/Ve3PFUX4WhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
 # CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOzA5BgNVBAMTMkRp
 # Z2lDZXJ0IFRydXN0ZWQgRzQgUlNBNDA5NiBTSEEyNTYgVGltZVN0YW1waW5nIENB
 # AhAFRK/zlJ0IOaa/2z9f5WEWMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkD
-# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzE5MTYwMzU4WjAvBgkq
-# hkiG9w0BCQQxIgQgci5Ubyb7DoRGpNFZHtwXH5QZEX6aQIVEccGohLeoMcIwDQYJ
-# KoZIhvcNAQEBBQAEggIAPVWb3RRrj2XHI9Y752Kd/S/mL98MQ7VAbeACfgTB5k86
-# qpzh0cS1JWU5Vklq+hN8RQt+s8RiGe/9f65F8mYN5jOCV6VN13mreNuk+NHdUgpO
-# Zj59ULFQvwdN1idhZnDQ52DmvxArhr7AiOOMIeJerIZ3tZh5J0MfTSpoag/1rMcz
-# e+JsChPNLo+rAzLF9RKu/12wD6u2yNrlAEkjm919C17Rex+itjLcq2NBHdrqnQ5n
-# Y3cR8UsEFJSPpVCZlP3tTq0gQSr3EVDZo1pvDxkX8AwehzZugdSKdcJK9cHMXtJy
-# lvqAM2TlZodS66p+OszR4eNSyEhc+sandK6heKwtTP/C+hxNnVgJqDN0UgyKpERP
-# Eefq7njGHCvVhMp3OYWerPxSWYZJy5Ctc1JRGfm9VlWCAuDjC8QKnfCKvEPs/mAN
-# ujab3CHxk8wP0jZl5brjMg+oPA0BucVEEu/j5njB/oHviTy8G60m0DQ0gQqIYRIk
-# +JfuuFPrWQZy3s6cEXhiYzajy/HPJMcviq8XpO5qI87q5dBjJm2mVn95laPmCsk+
-# JEw9sy0HaYI3GWI0IG7b6SnrgnoBWVGk8k5EaBw9dHC8qk29uqp+Vkuc2BJJjNyJ
-# 2lZ1+U4u74HNIIlkxQc/n+pHfflSxAQ86+VyKY3TzzziKCVpBCVf3GGiw+wiSko=
+# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzE5MTYwMzU1WjAvBgkq
+# hkiG9w0BCQQxIgQgGw5vLsLMuhg2Z4RgiMnql1FFbYLB4priXcGPXmYa9NEwDQYJ
+# KoZIhvcNAQEBBQAEggIAeiz/Uc9X6oRvPjU3cXcbodFStFZlN2fE7bxKicV/grw5
+# 0+HqtwXPhJ5uNZoiarATl+29+rL9mDLfbNpz29b6wO1NV9aVTuG9bLS3vaJ1DV0k
+# rKI3wHNNKz35I4Eg4w411E6f42nCGRsp7MGtK4GuDcusUAzAGd7QVu8Z0Fy4aLkI
+# bDqJrXO3fT+Bu9ArH1VvigcJcqVhR/YFFhJuynTXryRTk/B+a4PFkKpsWr7TP52Y
+# HJLil4oWM7i//kFvkdZ1SH6tj8m8asDW5onmZY+g9zxZzyOba+0nC+h45uU25C6Y
+# zUAa+iWOHY8nwNADV8kkczXEPEanAAMgJy4bLFzV2FK3bstvi4QvKiroMu5MvU1M
+# elo/5iSgXGRJdzY5kNycMt+btgip0jcrlfWjCrqhb9g/peB2OtTK2zhQH8FvehdN
+# fUJ4dn7MCkxvaFYEQcimDVp9Ae+Zt40bY1Dlf7WLtSW8C4bTY5ko5kpUuQ6nyY3b
+# 1foZedGmjeeAtQE3Y9ET6eaaG6nBrAdreb7lwdVCR0gN5uA2SnODj3wiMa+gfCIH
+# GcLwEcvP7QnJh8nUYMg3k3tSjjWFwweFPI9jQAjrINT725eRJp0Dll7CmN3XKUVX
+# bEfOWW7ioW5SKmqoMUmnje74snm3o5zFO1DWJH9iQsb/FCynC09GUqnaiu0+l18=
 # SIG # End signature block
