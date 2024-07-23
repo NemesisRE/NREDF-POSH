@@ -6,15 +6,17 @@ function NREDF_LoadModules (${MODULES}) {
     } elseif (Get-Module -ListAvailable | Where-Object { $_.Name -eq ${MODULE} }) {
       # If module is not imported, but available on disk then import
       NREDF_UpdateModule ${MODULE}
+      Write-Host "Module ${MODULE} will be imported"
       Import-Module ${MODULE}
     } elseif (Find-Module -Name ${MODULE} | Where-Object { $_.Name -eq ${MODULE} }) {
       # If module is not imported, not available on disk, but is in an online gallery then install and import
-      Write-InfoLog "Module ${MODULE} will be installed"
+      Write-Host "Module ${MODULE} will be installed"
       Install-Module -Name ${MODULE} -Force -Scope CurrentUser
+      Write-Host "Module ${MODULE} will be imported"
       Import-Module ${MODULE}
     } else {
       # If the module is not imported, not available and not in an online gallery then abort
-      Write-WarningLog "Module ${MODULE} not imported, not available and not in an online gallery, exiting."
+      Write-Warning "Module ${MODULE} not imported, not available and not in an online gallery, exiting."
     }
   }
 }
@@ -22,8 +24,8 @@ function NREDF_LoadModules (${MODULES}) {
 # SIG # Begin signature block
 # MIIbiwYJKoZIhvcNAQcCoIIbfDCCG3gCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUFMVEoKHZbOYBi7G2aEGx0OKM
-# ZkigghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUF4xk/3dB1qr5pN5VIHiYsXHO
+# QHqgghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
 # AQsFADAVMRMwEQYDVQQDDApOUkVERi1QT1NIMB4XDTI0MDcxOTEwMDE0NVoXDTI1
 # MDcxOTEwMjE0NVowFTETMBEGA1UEAwwKTlJFREYtUE9TSDCCASIwDQYJKoZIhvcN
 # AQEBBQADggEPADCCAQoCggEBAOl2MdANwTlf5vc2DArt9tpjFrS2pAvRQDMrTMxx
@@ -144,27 +146,27 @@ function NREDF_LoadModules (${MODULES}) {
 # BgNVBAMMCk5SRURGLVBPU0gCEB9E/6a7V/SJRXU6SM+Lp/AwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFMmzza+cKAKV/DVImfavh29ooSgXMA0GCSqGSIb3DQEBAQUABIIBABs/VYDW
-# HGaoGH5elbPc6zLfl1bHxdWtqftpCLQBg8tUGXMtTLNCAKyauwFvzTzBI5aitd5S
-# GyPQS4jwpQKdN6M6xQtGUQEyUtFu0OC2ELHKT4qN94quqlzvQ5AAVPIblP49VIqi
-# 20vjaE4b3IuAtGMpq7v2KtFrjCCfLRJGGJSIU++bq8uMSpw40TVJZr1aoiZv/8o7
-# ydNjW7nhlmT+Ib1Kzvt0AjJ5vH7JLjUM2DI8TtDZUXzlMMTIFGqzEaBtFPBp4Ol0
-# hRz7H1Jy04ME9U5D/9eeC7M0SFOCkSpAMtzAD72RlMps8JU1Jfpx/oQjs36fVjuB
-# dAE3sRfYPtdnm0WhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
+# MRYEFGQ6XckbnUBTSasIICT13QPXRT99MA0GCSqGSIb3DQEBAQUABIIBAGrsNa6f
+# /ohYQ9lGVmmQ412dTe8Lhb8LEwDq9ShryLEnFX7UUpclXP8G1xeSGG58xRCZJuMi
+# kJAvFoVFHwZBwsayST0uK30hdTCY/vUQmPP8kCRl+ezXT2YH6cr8AoV3/v2Xx9m1
+# +4RarHLSDpqCgHfT4KdB352m8qNUGxeBnWJp/e8h/6l5KHkLhK27x2uFiudLVjC3
+# TuDoZHPfp9IsTEFocgfir9G9h9ibf+Blk+p+7qOsCNPPk5rEstIdpOVrj5z5EVs7
+# UoAh0W6rbSlFYrf0LMRioz6y/8hbWa9CK2EY7aVubAXWvJXOwbUe1ITj1RPBdGVW
+# rm5/WWFaMoFaALqhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
 # CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOzA5BgNVBAMTMkRp
 # Z2lDZXJ0IFRydXN0ZWQgRzQgUlNBNDA5NiBTSEEyNTYgVGltZVN0YW1waW5nIENB
 # AhAFRK/zlJ0IOaa/2z9f5WEWMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkD
-# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzE5MTAyNDUzWjAvBgkq
-# hkiG9w0BCQQxIgQgsOEWFRr8FtHu6VVXqdc6O6R5ISdbDLhVQnPTbYmcSOIwDQYJ
-# KoZIhvcNAQEBBQAEggIAJ54oFA3Gewu2m0EMrYjF3DejorfoX4DCFcPW4ICTNHO8
-# ufCjX4kMD7dCnmKucQthlxj+z+NUKEUR7EsRR0zQfnoe8TPXKXi8C8kgwOvc9t0r
-# iSPwMxR56isxSJZIlmuz+psj4eojwTioRS4tBXGd/qog3Uv4/XYapFHKpw0leo6e
-# NMhWsCQgHk0KBk1Wa3mKJ9pNPS8Uc8hgtfv+3SEsoWqiQUJtvtaSs+yAijuLmSBv
-# 9j4ssCjMTPLqo+eNJ8o5rML8B0LwGURZLqDNmP7SGLxEIUo+0zangMIbStdufN4T
-# 7Tb5fl8p9AfDeq/9kTO4yBE6ZC4FEamRclBfaoOlQMOL4GJUKEFErkcB311JuDZC
-# eZ3OWNw1hExLobaU0jbFvz73tJ1eO6sVhXPKDDotaNrA0ruS0opj4jFpandpVryP
-# C4xhH5AvakgvGMzRbwPINAd2ArhBt3Uzq00NfznKiVS+qMjpA6IzC+c4+QYm60pF
-# nxKRSCFGx3iGvRXxhHBoNNpwJxiYAcH6JJpwQ275JXgCebtuV/HPmyH8cB6DR23o
-# togtsOc5BfoL55GPjuJGdcxBL8vnInwbjiBGB9hwrWfXLsk02qFf4LoYrh7z75x8
-# nzQSuATM0LKYtObaI20YKO6iQ29UM0HcC9FFtTu9FyZwlEtVswhoyvGp9uCUyzM=
+# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzIzMTAwOTAzWjAvBgkq
+# hkiG9w0BCQQxIgQgBkta1dAHZ3VyCBxQp+kbFE036MElK3D36RkVvzlaH8MwDQYJ
+# KoZIhvcNAQEBBQAEggIAUvcnly467aIYNm2GG9QkmXaz23RYT+NKUsksxSRi3K8K
+# 9ouvD2a4JhjOsOxmFgnv3vl93ZKND2F5vkK0ya559GiOpZ0CQik+WwYXRiWpSlCE
+# XJDeMQyy1j6YOincyOAYyRB3DC3X1bqh6NOz1TQ3aqo1WCzJB9HUhZN3aOsIqck9
+# Qo/2JkqzwIxwdYEJ0oMIgNc/avtOEWVHgIQcA3+Lr9Ip2jY02R/EWk680s7/GHwQ
+# eOUn8ElXzOBv0oIhmP0d/QSdi7KAJVxT4KHbgYilBb8amhzF1/yzO8IZJLdRWa7E
+# rjN4hDlWqRBTy+LprC1rFeJcHmUpwIel6eehrV6CEP3jNslgEAToGnI302dMHLKJ
+# cxdomS37bIkh5M7lE/WVv34JI0L+TRh9wbZE5nfUPbGejqHuu4L+JnXYEzUDh48W
+# Iq5J8AdCrYv5jBgcdlJrUXQOR5eD8z5F3Y3cD9dyDVbeMhH5W6a0aeUHq0aDAs2w
+# hlQdLr358yKUgF/or93/xCUpcAQPQGTG2QWiM2Hqz4Sv0lN55yxDOF/Mp0htcyyq
+# lYNJPBjeA4jttvuPpH2PPzWWfoyD04ok/Rzxb/3DOGdhTLU8AjOsGH0lca2i+wue
+# eLVwKIkoFuLY2fJ8Zh62j8AVhY4BLi1Ymr9ZFUt54mjsoWzDZzS4c/k2rMTQJos=
 # SIG # End signature block
