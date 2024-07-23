@@ -6,13 +6,13 @@ if ([string]::IsNullOrEmpty($ENV:POSH_THEME_FILE)) {
   $POSH_THEME_FILE = $ENV:POSH_THEME_FILE
 }
 
-if ( ${isWindows} ) {
+if ($isWindows) {
   $ENV:PATH += ";$HOME\.local\bin"
   $ENV:NREDF_CACHE = "$ENV:LOCALAPPDATA\nredf"
   $ENV:NREDF_LRCACHE = "$ENV:NREDF_CACHE\LRCache"
 }
 
-if ( ${isLinux} ) {
+if ($isLinux -or $IsMacOS) {
   $ENV:XDG_BIN_HOME = "$HOME/.local/bin"
   $ENV:XDG_CONFIG_HOME = "$HOME/.config"
   $ENV:XDG_CACHE_HOME = "$HOME/.cache"
