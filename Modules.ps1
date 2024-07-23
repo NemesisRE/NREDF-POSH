@@ -13,7 +13,7 @@ if ( ${isWindows} ) {
   [Void]$MODULES.Add('GuiCompletion')
 }
 
-if (Get-Command kubectl) {
+if (Get-Command kubectl -ErrorAction SilentlyContinue) {
   [Void]$MODULES.Add('PSKubeContext')
 }
 

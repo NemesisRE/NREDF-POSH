@@ -1,14 +1,14 @@
 $PROFILE_PATH = (Get-Item $PROFILE).Directory
 Set-Location $PROFILE_PATH
 
-if (-not (Get-Command git)) {
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
   Write-Error "Error: Could not find git, install git and try again."
   Exit
 }
-if (-not ((Get-Command fzf) -or (Get-Command oh-my-posh))) {
-  if (Get-Command winget) {
+if (-not ((Get-Command fzf -ErrorAction SilentlyContinue) -or (Get-Command oh-my-posh -ErrorAction SilentlyContinue))) {
+  if (Get-Command winget -ErrorAction SilentlyContinue) {
     winget install -s winget junegunn.fzf JanDeDobbeleer.OhMyPosh
-  } elseif (Get-Command brew) {
+  } elseif (Get-Command brew -ErrorAction SilentlyContinue) {
     brew install fzf oh-my-posh
   } else {
     Write-Error "Error: Could not install fzf and/or oh-my-posh"
