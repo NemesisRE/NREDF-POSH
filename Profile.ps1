@@ -12,7 +12,7 @@ if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
 }
 
 # Set PSReadLine options
-Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
 # Set Keyhandlers
 #Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete

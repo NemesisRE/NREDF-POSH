@@ -1,15 +1,21 @@
-[Void]$MODULES.Add("PSReadLine")
-[Void]$MODULES.Add("posh-git")
-[Void]$MODULES.Add("PSFzf")
-[Void]$MODULES.Add("Recycle")
-[Void]$MODULES.Add("Terminal-Icons")
-[Void]$MODULES.Add("PSKubeContext")
-[Void]$MODULES.Add("ZLocation")
-[Void]$MODULES.Add("PoShLog")
-[Void]$MODULES.Add("Get-ChildItemColor")
+[Void]$MODULES.Add('PSReadLine')
+[Void]$MODULES.Add('posh-git')
+[Void]$MODULES.Add('PSFzf')
+[Void]$MODULES.Add('Recycle')
+[Void]$MODULES.Add('Terminal-Icons')
+[Void]$MODULES.Add('Get-ChildItemColor')
+# Here are some nice modules for your "${PROFILE_PATH}\Modules.ps1"
+#[Void]$MODULES.Add('Microsoft.PowerShell.SecretManagement')
+#[Void]$MODULES.Add('Microsoft.PowerShell.SecretStore')
+#[Void]$MODULES.Add('SecretManagement.KeePass')
+#[Void]$MODULES.Add('PoShLog')
 
 if ( ${isWindows} ) {
   [Void]$MODULES.Add('GuiCompletion')
+}
+
+if (Get-Command kubectl) {
+  [Void]$MODULES.Add('PSKubeContext')
 }
 
 # SIG # Begin signature block
