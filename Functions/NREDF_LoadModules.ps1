@@ -1,22 +1,9 @@
-function NREDF_LoadModules (${MODULES}) {
+function NREDF_InstallModules (${MODULES}) {
   foreach (${MODULE} in ${MODULES}) {
-    if (Get-Module | Where-Object { $_.Name -eq ${MODULE} }) {
-      # If module is already imported say nothing
-      NREDF_UpdateModule ${MODULE}
-    } elseif (Get-Module -ListAvailable | Where-Object { $_.Name -eq ${MODULE} }) {
-      # If module is not imported, but available on disk then import
-      NREDF_UpdateModule ${MODULE}
-      Write-Host "Module ${MODULE} will be imported"
-      Import-Module ${MODULE}
-    } elseif (Find-Module -Name ${MODULE} | Where-Object { $_.Name -eq ${MODULE} }) {
-      # If module is not imported, not available on disk, but is in an online gallery then install and import
+    $moduleInstalled = Get-InstalledModule | Where-Object { $_.Name -eq $MODULE }
+    if (-not $moduleInstalled) {
       Write-Host "Module ${MODULE} will be installed"
-      Install-Module -Name ${MODULE} -Force -Scope CurrentUser
-      Write-Host "Module ${MODULE} will be imported"
-      Import-Module ${MODULE}
-    } else {
-      # If the module is not imported, not available and not in an online gallery then abort
-      Write-Warning "Module ${MODULE} not imported, not available and not in an online gallery, exiting."
+      Install-Module -Name ${MODULE} -Scope CurrentUser
     }
   }
 }

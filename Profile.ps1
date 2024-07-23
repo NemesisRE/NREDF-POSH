@@ -2,9 +2,8 @@
 
 Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 
-# Update and Load Modules or install if necessary
-Write-Host "Updating and Loading Modules"
-NREDF_LoadModules $MODULES
+NREDF_InstallModules $MODULES
+NREDF_UpdateModule
 
 # Set Powershell Theme
 if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {

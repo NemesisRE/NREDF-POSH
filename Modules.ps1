@@ -1,4 +1,3 @@
-[Void]$MODULES.Add('PSReadLine')
 [Void]$MODULES.Add('posh-git')
 [Void]$MODULES.Add('PSFzf')
 [Void]$MODULES.Add('Recycle')

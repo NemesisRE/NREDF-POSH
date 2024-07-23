@@ -29,7 +29,11 @@ function NREDF_LastRun {
   $LastRunFile = Join-Path -Path ${ENV:NREDF_LRCACHE} -ChildPath ("last_run_${CurrentFunction}.txt")
 
   # Get Last Run Time (default 0 if file doesn't exist)
-  [long] $LastRun = (Get-Content -Path $LastRunFile -ErrorAction SilentlyContinue) -or 0
+  [long] $LastRun = Get-Content -Path $LastRunFile -ErrorAction SilentlyContinue
+
+  if ($LastRun -eq '') {
+    $LastRun = 0
+  }
 
   # Check for previous run
   if ($LastRun -gt (Get-Date).ToFileTime()) {
