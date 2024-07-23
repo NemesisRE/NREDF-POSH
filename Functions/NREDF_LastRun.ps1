@@ -8,13 +8,16 @@ function NREDF_LastRun {
     [long] $NextRun = (Get-Date).AddHours(12).ToFileTime()
   )
 
-  if (-not [string]::IsNullOrEmpty($CurrentFunction)) {
-    $CurrentFunction
-  } elseif (Get-Command Get-PSCallStack -ErrorAction SilentlyContinue) {
-    # Get caller function name (limited to PowerShell v5.1)
-    $CurrentFunction = (Get-PSCallStack)[1].FunctionName
-  } elseif (Get-Module | Where-Object { $_.Name -eq 'PSReadLine' }) {
-    $CurrentFunction = (Get-PSReadLineHistory -Count 1).PreviousInputObject.Split(' ')[-2]
+  if ([string]::IsNullOrEmpty($CurrentFunction)) {
+    if (Get-Command Get-PSCallStack -ErrorAction SilentlyContinue) {
+      # Get caller function name (limited to PowerShell v5.1)
+      $CurrentFunction = (Get-PSCallStack)[1].FunctionName
+    } elseif (Get-Module | Where-Object { $_.Name -eq 'PSReadLine' }) {
+      $CurrentFunction = (Get-PSReadLineHistory -Count 1).PreviousInputObject.Split(' ')[-2]
+    } else {
+      Write-Error "Could not get current function, will skip last run"
+      return $false
+    }
   }
 
   # Create last run cache directory if it doesn't exist
@@ -30,20 +33,20 @@ function NREDF_LastRun {
 
   # Check for previous run
   if ($LastRun -gt (Get-Date).ToFileTime()) {
-    return 0
+    return $true
   } elseif ($Success) {
     Set-Content -Path $LastRunFile -Value $NextRun
-    return 0
+    return $true
   } else {
-    return 1
+    return $false
   }
 }
 
 # SIG # Begin signature block
 # MIIbiwYJKoZIhvcNAQcCoIIbfDCCG3gCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvKExTfxmtydNUj/IffjZB3QL
-# 60mgghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUs0CFsAXpkrlHCTbG6/3BStDo
+# oD+gghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
 # AQsFADAVMRMwEQYDVQQDDApOUkVERi1QT1NIMB4XDTI0MDcxOTEwMDE0NVoXDTI1
 # MDcxOTEwMjE0NVowFTETMBEGA1UEAwwKTlJFREYtUE9TSDCCASIwDQYJKoZIhvcN
 # AQEBBQADggEPADCCAQoCggEBAOl2MdANwTlf5vc2DArt9tpjFrS2pAvRQDMrTMxx
@@ -164,27 +167,27 @@ function NREDF_LastRun {
 # BgNVBAMMCk5SRURGLVBPU0gCEB9E/6a7V/SJRXU6SM+Lp/AwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFGH2NMbOhro+PT9dfUqr3d3SH4IZMA0GCSqGSIb3DQEBAQUABIIBAKeUcpmk
-# bt42WQsTupRYcikN3pjWcpEHqQfQnFiy3GUzkoNp/88djIqFFQQkW6w1rOToRZF4
-# 5eNqzSL5abVp0NR1J8APCUMZuUCeP34J+RyfwFRnBrb5sHwO/W7vwuiy012KEzng
-# FzMDooGgB1YNVHOSzeErzKcjfhSnNmi8mYOShubTV34wOpJIOIEbEzBT5A4RvRFk
-# nd74nbZtqUk6yv+eYnw+45RGrThUb2NLBmIkaPlAIpPZNRyGx+Kv53ClNXZA+ga1
-# 95yKcxzlmHMlYqcugz29qunQER2jqDt/OLvD4dYrQF6XedDwDc8EZ8WBfElwovFA
-# ahO5lsXRmaJKbiChggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
+# MRYEFCXcsS+MghkKAJg97TEiQpzSHtupMA0GCSqGSIb3DQEBAQUABIIBABlhEH1v
+# L6BSeRxK7OOSi8T2JVa8xWDEgdxbsYV6N18b0p9yQ0GdC1jXlEbGcT6fvzNFPuqF
+# enXGbAMNLtaVk/6hqhuG0gjUdPRxctyU2tB6Xh59ZLX8ouOm/4Irbl1gJ5OWQ5fz
+# BWPbB09S5OFZmhJoE4XyW+n09Xsf6uC7f/n8uj/GRL1iQOInWdX/NxEhIVtSRlsq
+# D2kV+nkRcXOpSZp/tveN1c2TwOAhrupdt5en6/LCvtLGzspdLlWvaBYi+1JDpa/C
+# pUuX69oNjwzX/38aYLdO60/06sAxmYp3lReAXASF4HoTdb8hRPT4gHoAFGiA9ERd
+# 0gT6FkwKwXdmBDShggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
 # CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOzA5BgNVBAMTMkRp
 # Z2lDZXJ0IFRydXN0ZWQgRzQgUlNBNDA5NiBTSEEyNTYgVGltZVN0YW1waW5nIENB
 # AhAFRK/zlJ0IOaa/2z9f5WEWMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkD
-# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzE5MTAyNDQ5WjAvBgkq
-# hkiG9w0BCQQxIgQgr6MiCBsDw+xmEc/CN5iYFhknuvnrK7i4nKdxYMQw9fgwDQYJ
-# KoZIhvcNAQEBBQAEggIAgROnz7TnYTldriO7yezVRALr4YA6ju2+Ra+Zi4SUlI46
-# mLMFYnbXTrTSIf+01cVoUZfgsxU2FEF5cyo5nS44cwMAym/oMJm5VHoRdN0WKy8e
-# 6Q/pXEs9oY4p/vOf0JfwKBFFx28aqp8XKyoI0mWY+OpzTO71GEcGlT5skaC5N7IQ
-# JYhlpGAuaYNVmrn90IFBltmNZuMfvoRIIkFEqZPQ7K5ACcRJfGLmC0VqF4B6w5CC
-# tMrrE8C6Xoq5grZaSuM9Pa+g7G9eLfTOK6MjjI4DMlVoaeMyZffBzGAZm2hRqxd0
-# 7cKf6viEIv/r1w+25QLKk8JY5gBGp0r413b6bDiGNAnYCLMFuYXpHiW5gNCwrtKc
-# /jEUJpswjMnPkCU6Id7LipZAmXmJMw5Sx5YUYoz0PehHgL6Gk5PxvGjRzsFNNDny
-# A20+ny97Qi3rwVtHGlpjG+cPbJRGyZPR0VoWjUxpILN5LzGcsgjEzfj7RVuS/6y3
-# SRhKeMasN8GrIcI/r/SRn4xAfOr8pxjwSU7beuPsWNqPw7QmRj+EwyVro7fbpG3T
-# qabQ7D62gzgVFw564hVRzdpEE2hbG3Au2whyGh87o3V+P17DbVBWoMw/HOG1Up+I
-# T0ISCe5XAqZI8eCbJ6LsWbGo6wKEboVLmKUIC5xeaH/2Y/itbHSo++1dc9YXRas=
+# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzIzMTAwNTQ0WjAvBgkq
+# hkiG9w0BCQQxIgQgBIWoJ+cw9EBUksScHRSTOQJQrYs6RAmj+8TPT2l+MUAwDQYJ
+# KoZIhvcNAQEBBQAEggIAn1OJ0SFpSYApP0fnsNmOi9uoZZElWoa4r63LBDSBLX7h
+# x6znT5ZgZ0I7Jcxbdwk6SG/3SyxnVIsKRZfXHRfc/jFLu5XbIHkTZF+fD0GRMOyr
+# Sc5tJTAXMXSca7XxFQlQ9AlT9SajVYALjTvia/CXkeeDPMwqV0B1A9jkMZ5SDf4Y
+# lqgkgCsB6h3k8rNM0VFmUm8lNur8XRf/oCKmKaqrTfsgOUhjMDIROzwbfwXSptC3
+# 1x0XEuLTYaAznFuuPHrO9qww2GmaNBKhexiQRonDVARRMO7+e7NrUnGBhNio1E9n
+# 3VTL7xDblsjKFZvU8ggWI6g8k2qWmr0dlk2sb6VcHmC7CslgYtleAzskCnX1pv+p
+# O+w81WgAeglHIg9M54vWJCAbVgGQ/BlVXdsLtgxgZW91Eot/WO7qPps9WR/hE8SS
+# 4d4OoFhDs+hsvrKTnVasF5nZbcdfDSuM04O3Sa57G/+Iy0Iq/ERd24FX7IKCMPcC
+# CLf/vle7nXbpSjGpEg2ER8dJY9Jhf/cfwLSSo2/Izhcypaoa/AuO41I8/bbvDeJG
+# QSjvP7LNsALyszDARFcFUn2aJnCrhptULJ3RNsEuso3nDPF5AuPgpH/l0JxBM6PW
+# Re/yz5MjtZLRegzTuX02slaR2SxeHSU2fQLoaA0CwOrCE8QUkk4Q4nZaIYqy9Gk=
 # SIG # End signature block
