@@ -1,6 +1,20 @@
 # NREDF-POSH
 
+## Prerequisites
+
+We need PowerShell Core this will not function with Windows PowerShell!
+
+We also need `git`, [`fzf`](https://github.com/junegunn/fzf) and [`oh-my-posh`](https://ohmyposh.dev/)
+
 ## Manual Installation
+
+If you are familiar with using powershell
+
+1. If on windows and not already done you have to set the execution policy to remote signed
+
+    ```powershell
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+    ```
 
 1. Checkout the repository into your profile directory
 
@@ -13,22 +27,12 @@
     . "${NREDF_PATH}\Profile.ps1"
     ```
 
-1. Import `NREDF-POSH.sst` to your Trusted Publisher cert store
+1. On windows import `NREDF-POSH.sst` to your Trusted Publisher cert store
 
 ## Scripted Installation
 
 Run the following snippet
 
 ```powershell
-$PROFILE_PATH = (Get-Item $PROFILE).Directory
-cd $PROFILE_PATH
-git clone "https://github.com/NemesisRE/NREDF-POSH.git"
-$PROFILE_CONTENT = Get-Content $PROFILE
-'# Load NRE Dotfiles
-${PROFILE_PATH} = (Get-Item $PROFILE).Directory
-${NREDF_PATH} = "${PROFILE_PATH}\NREDF-POSH"
-. "${NREDF_PATH}\Profile.ps1"'| Out-File -FilePath $PROFILE -Force
-$PROFILE_CONTENT | Out-File -FilePath $PROFILE -Append -Force
-$CERT_FILE = (Get-ChildItem -Path $PROFILE_PATH\NREDF-POSH\NREDF-POSH.sst)
-$CERT_FILE | Import-Certificate -CertStoreLocation Cert:\CurrentUser\TrustedPublisher
+Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/NemesisRE/NREDF-POSH/main/install.ps1'))
 ```
