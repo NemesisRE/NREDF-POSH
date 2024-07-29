@@ -1,36 +1,44 @@
-# Set PSReadLine options
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-
-$PSDefaultParameterValues['*:Encoding'] = 'utf8'
-$PSDefaultParameterValues['Format-*:AutoSize'] = $true
-$PSDefaultParameterValues['Format-*:Wrap'] = $true
-
-$MaximumHistoryCount = 10000;
-
-if ($isWindows) {
-  $ENV:PATH += ";$HOME\.local\bin"
-  $ENV:NREDF_CACHE = "$ENV:LOCALAPPDATA\nredf"
-  $ENV:NREDF_LRCACHE = "$ENV:NREDF_CACHE\LRCache"
-  $YAZI_FILE_ONE = "C:\Program Files\Git\usr\bin\file.exe"
+# Set Keyhandlers
+#Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+if ( ${isWindows} ) {
+  Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-GuiCompletion }
+} elseif ( ${isLinux} ) {
+  Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion -CaseInsensitive }
 }
+Set-PSReadLineKeyHandler -Key Ctrl+d -Function ViExit
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+Set-PSReadLineKeyHandler -Key Alt+d -Function ShellKillWord
+Set-PSReadLineKeyHandler -Key Alt+Backspace -Function ShellBackwardKillWord
+Set-PSReadLineKeyHandler -Key Alt+q -ScriptBlock { NREDF_SaveInHistory }
 
-if ($isLinux -or $IsMacOS) {
-  $ENV:XDG_BIN_HOME = "$HOME/.local/bin"
-  $ENV:XDG_CONFIG_HOME = "$HOME/.config"
-  $ENV:XDG_CACHE_HOME = "$HOME/.cache"
-  $ENV:XDG_DATA_HOME = "$HOME/.local/share"
-  $ENV:XDG_STATE_HOME = "$HOME/.local/state"
-  $ENV:NREDF_CACHE = "$ENV:XDG_CACHE_HOME/nredf"
-  $ENV:PATH += ";$ENV:XDG_BIN_HOME"
-  $ENV:POSH_THEMES_PATH = "$ENV:XDG_CACHE_HOME/oh-my-posh/themes"
-  $ENV:NREDF_LRCACHE = "$ENV:NREDF_CACHE/LRCache"
+
+Set-PSReadLineKeyHandler -Chord '"', "'" `
+  -BriefDescription SmartInsertQuote `
+  -LongDescription 'Insert paired quotes if not already on a quote' `
+  -ScriptBlock {
+  param($key, $arg)
+
+  $line = $null
+  $cursor = $null
+  [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+  if ($line.Length -gt $cursor -and $line[$cursor] -eq $key.KeyChar) {
+    # Just move the cursor
+    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
+  } else {
+    # Insert matching quotes, move cursor to be in between the quotes
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)" * 2)
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor - 1)
+  }
 }
 
 # SIG # Begin signature block
 # MIIbiwYJKoZIhvcNAQcCoIIbfDCCG3gCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUzfnBRXJEskCa6jQEdycMyAlG
-# elugghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhVK1mhguIQPtdAQkguCA66qX
+# a5agghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
 # AQsFADAVMRMwEQYDVQQDDApOUkVERi1QT1NIMB4XDTI0MDcxOTEwMDE0NVoXDTI1
 # MDcxOTEwMjE0NVowFTETMBEGA1UEAwwKTlJFREYtUE9TSDCCASIwDQYJKoZIhvcN
 # AQEBBQADggEPADCCAQoCggEBAOl2MdANwTlf5vc2DArt9tpjFrS2pAvRQDMrTMxx
@@ -151,27 +159,27 @@ if ($isLinux -or $IsMacOS) {
 # BgNVBAMMCk5SRURGLVBPU0gCEB9E/6a7V/SJRXU6SM+Lp/AwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFIS1yljCsqh4KqbzA8k/uy939bDkMA0GCSqGSIb3DQEBAQUABIIBAAhy/HZM
-# jBNtN5nF7N5HZVGJRNKhm9SVwW8ueSceIaVy4QlC/qtd1YvR8AO4ZX1lUOuLalv4
-# 3dTp6yOLAYp2e9ZY0vuW3DP6gJST+8b7R0Fdw8SCRe4Chvtn8lVQCEbtMChlujNr
-# KAlo93/1ehKVuRl164xaK9k5UYJOxstuVjLKq2SD2pm2I9X/eU4Mccs0FIhoOP2+
-# 564Mv6VnqpeacxCATDnbfsJ2uVuzolBJXmyQFVaUanKxGgO5PmejO4xOBi7haocP
-# xtBhPi3a9Df1KXhTmtsRCrco0HOcjfUOys3ThwuMElymb/RfjoRU6rtwcIuZyb0h
-# LDadA9nlzRzwIC6hggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
+# MRYEFG2gzAEVrH7fKI02L6HqvPINp2f3MA0GCSqGSIb3DQEBAQUABIIBALp97+V+
+# QZoz4MUQ0yzWvAh2yy+NgdtUeWzKaWewk7d6Ozl/mSsLDv5fmTf7QssHktLiosaQ
+# Ft7rrWk1kFq25quB8VQZyfnFinhVZH8KG1SEnN75FEaiJFIFFzhwWvJgLUSK40sk
+# 77c58ti9x5vOSH+ydY9yI3pnzqH0qwgbKD+6PKUka8yrey4wAvlS4pW8q9SHb2/R
+# Qg6rzIpJWsf8NH+jV99998NnzQuV7/Y21Na067NKCUUYTJhT+ckOAtn4bZxv4XUi
+# 0PrGadMDmAnb94gPIbQrNq9NI/8vIPDnvPAPkjWJqE5leZykxlukPpkEWWLQlEV1
+# b9vaLvV9qF6jhRGhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
 # CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOzA5BgNVBAMTMkRp
 # Z2lDZXJ0IFRydXN0ZWQgRzQgUlNBNDA5NiBTSEEyNTYgVGltZVN0YW1waW5nIENB
 # AhAFRK/zlJ0IOaa/2z9f5WEWMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkD
-# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzI2MTQyODU4WjAvBgkq
-# hkiG9w0BCQQxIgQghsVp/3biXsp0uig4WII7vcWkelMibUa789ot6MKjpAEwDQYJ
-# KoZIhvcNAQEBBQAEggIACPpaCVO04NsQzKUFxnbOnR1GYP+gGQiLo6Sz1UxJEZ54
-# d3PHS6Mw6ZJpC+/jJJ4eT2wcGnCKD+jDHAYNfr87YD+7zPyjK/wpgrmkflp/jSki
-# GoCEkXO9vAMRPD5Si/T28H6gxT0D3TzWyqIbdTHPzmsujYrZZ4SwIILGSXiD6Txy
-# SR18NXDxsfWrWUDQGnR0DHJnN5iO6nm6nuIsbbUY2nlYHeYt8Y0o92tYUXRgf+PQ
-# QJCugbBXYSH9/4hAbHpWNtA5SIwUB8KIfoG0vRWfrL7copmAcXmFmU14YDLohlrI
-# QYzF5wAX/4i2QOSX0pV4WzYLAJawZaL+B4Setb1XU6fSfcGakMcGu3azSAaAUsAM
-# AN8/nOsWt9ko+LHVbYXjchIYRTH7/DUJTpBLHMtho89FzVIWhRHXkOY+2sxxDbLp
-# BXbQtF2UvvfTKPtc40RGpnZ+IeGfdp6bKTLVQbZpOBlk9wpY/yrdqAg/AoR0Xw6v
-# IgqnE+LY4ccnpbCnmduCNU5ov93tBrE3iSDgBBT+J4QUGVVgftrAWekfl+23FjNW
-# ZmSRJGtcgey1qGOazDCp8I57+goBy0YSPbCzz7GyJo80v/SLd5gIQAsqk+afEvAP
-# JzV3tmBGWgzPS34e0tHGLSlQ2RMZ85tbkTJ2/dteQRsNqYr4rJIXMz5H5G1sACU=
+# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzI2MDg1NzQwWjAvBgkq
+# hkiG9w0BCQQxIgQga6t4bXZ3+Ddc1rPLflKDdZnQE7peuL3t4gwTJK47vf4wDQYJ
+# KoZIhvcNAQEBBQAEggIANKMsznbbqvQHlKddiBT8GMz/ak8PWi4rIIxqjlZXdg60
+# 03QacSTot53wR19FWKQLmHf40nW0MfN6HDiYQJrlCJfB6C6v61BUtt5CcgSlfCv3
+# 8FAOAQkU4hmG/3p5OkwCwi0lI/tygl9/W28Ga8Ga1PHOUJAIjYCU0LQCXvPt3f6q
+# wdyDkEEDN69N5MZkQxpRe71D/EuEPSKAdxK73hBmfhGQzThLKX0IjW+879pj/Bxu
+# E/MbQ9rl82Hg0+PiP30mqoStu7KW60H05D+T86p8yGR6qrqy86lFH/kyLIdfev7i
+# mOaPj4of1XPN7Z/EuJi8/2FVUhsqLoGJE5Vw8jqgFszBV9wexfdU7r2WdAk4VubL
+# JCJnv97yaO+EH6OLAj+Uocu+YO/fL2fiCrUwLRZTszhUCI2TBGc1vojYvoTTzcvF
+# ryAfU0tzELzgG8sxJ7OdX9rXxftzr/J5hZkDG1ipJzxhbSr4Mw+fbZQ2nnWGJ/AX
+# ldZ2VmnCPwxQzVyWlc61aVhuCCpX5qAnWKS/Ncgvs57qob120+ROd6Lj/k9c094X
+# dpma7Q7N+GfaT5hYPl0NivucR26UoqNRbmSczfQ2Pc0JPvNLGjeWKdfuJablv0SA
+# M0VcpbbdNuYtG5tEE83piE2F+TQvx5DJyle5WMpnkrXeEVIbjbVDgYTq2yw72/E=
 # SIG # End signature block

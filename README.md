@@ -22,9 +22,9 @@ If you are familiar with using powershell
 
     ```powershell
     # Load NRE Dotfiles
-    ${PROFILE_PATH} = (Get-Item $PROFILE).Directory
-    ${NREDF_PATH} = "${PROFILE_PATH}\NREDF-POSH"
-    . "${NREDF_PATH}\Profile.ps1"
+    $ENV:PROFILE_PATH = (Get-Item $PROFILE).Directory
+    $ENV:NREDF_PATH = "$ENV:PROFILE_PATH\NREDF-POSH"
+    . "$ENV:NREDF_PATH\Profile.ps1"
     ```
 
 1. On windows import `NREDF-POSH.sst` to your Trusted Publisher cert store

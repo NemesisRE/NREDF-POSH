@@ -1,50 +1,30 @@
-. "${NREDF_PATH}\Sources.ps1"
+. "$ENV:NREDF_PATH\Sources.ps1"
 
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-
-NREDF_InstallModules $MODULES
-NREDF_UpdateModule
+if ([string]::IsNullOrEmpty($ENV:POSH_THEME_FILE)) {
+  $POSH_THEME_FILE = 'powerlevel10k_rainbow.omp.json'
+} else {
+  $POSH_THEME_FILE = $ENV:POSH_THEME_FILE
+}
 
 # Set Powershell Theme
 if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
   oh-my-posh init pwsh --config "$ENV:POSH_THEMES_PATH\$POSH_THEME_FILE" | Invoke-Expression
 }
 
-# Set PSReadLine options
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-
-# Set Keyhandlers
-#Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-if ( ${isWindows} ) {
-  Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-GuiCompletion }
-} elseif ( ${isLinux} ) {
-  Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion -CaseInsensitive }
-}
-Set-PSReadLineKeyHandler -Key Ctrl+d -Function ViExit
-Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-Set-PSReadLineKeyHandler -Key Alt+d -Function ShellKillWord
-Set-PSReadLineKeyHandler -Key Alt+Backspace -Function ShellBackwardKillWord
-Set-PSReadLineKeyHandler -Key Alt+q -ScriptBlock { NREDF_SaveInHistory }
-
-# Produce UTF-8 by default
-# https://news.ycombinator.com/item?id=12991690
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-
-# https://technet.microsoft.com/en-us/magazine/hh241048.aspx
-$MaximumHistoryCount = 10000;
-
 # PSFzf settings
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
-# Register Completions
-Register-PSKubeContextComplete
+NREDF_InstallModules $MODULES
+NREDF_UpdateModule
+
+# Needs to be imported to work
+Import-Module -Name Terminal-Icons
 
 # SIG # Begin signature block
 # MIIbiwYJKoZIhvcNAQcCoIIbfDCCG3gCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUd25G6sggL09q7z9F63Y3mPRg
-# oiGgghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU0IcOCdgp6nmZ4tdG+oSitNV5
+# HVygghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
 # AQsFADAVMRMwEQYDVQQDDApOUkVERi1QT1NIMB4XDTI0MDcxOTEwMDE0NVoXDTI1
 # MDcxOTEwMjE0NVowFTETMBEGA1UEAwwKTlJFREYtUE9TSDCCASIwDQYJKoZIhvcN
 # AQEBBQADggEPADCCAQoCggEBAOl2MdANwTlf5vc2DArt9tpjFrS2pAvRQDMrTMxx
@@ -165,27 +145,27 @@ Register-PSKubeContextComplete
 # BgNVBAMMCk5SRURGLVBPU0gCEB9E/6a7V/SJRXU6SM+Lp/AwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFE5pSIV9fNxKcTsw6r1OB0uUGRYGMA0GCSqGSIb3DQEBAQUABIIBAIRpLCfC
-# nwPe2OlxqlLW/20RY2lhxjC7i4DbsyMG/qCRlenmbuO2vW4PBb8BNp0H4AU8ZPs0
-# co3+zQRSl+aMzU0mqDaLVPhVJ+Eaz7eP5+TAZ+tBUwy7PZLgMe9pAhMXztXHNxOa
-# /3fiX48X07EV67jauZNmjZakIiM1j2EsABV8KdhOt/6pWWDQUkk8HUgdegtU63LX
-# /McUljXdGo03S4Vyfz09xdBc8Ba8mDM5+Sfjh85az3pvNpHaPK9TWL0exwVy5C3P
-# qbNZ4Qr0qrc7wDeRtrs3y9mbGu51A4M45rw48iPGUTZ84iSizQKudA0FJjan3a4l
-# SMEZw4XJxiD2oM2hggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
+# MRYEFNafdLr3zdtrhUlrVp7zv2nIjpBfMA0GCSqGSIb3DQEBAQUABIIBANyUphXv
+# sY/1+vYzdv4dCcsQTqFIcZGCtbxjdc+d0zzaQZFnSVLgyjiSNBYyDeSDzBq2hBxn
+# Xrqe+Eb9jbZWbbo4vM1x/Zo4wfn7tGt5dozXAys1uOtkg2GHGecOVagdhaFXtBCg
+# G1hvqqpL6hrXLNticuShfi6hHHW+eNJv/LsPGA0b6zhLFGifv9pixj9WiwGAsUiE
+# yKmdMgMmI6H9MhyryCiE0wnjsztI7EjEdRzZrk2hZWNR4M258AZRE3cHatYkIuPY
+# wIhbw5Q4pL2PQP2Ufr4uAB/T6eO0OucEUh7QJpPb7ubdLvwIt2pwf357Xp+iYJXN
+# Vg+wz+ZliB4HavyhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
 # CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOzA5BgNVBAMTMkRp
 # Z2lDZXJ0IFRydXN0ZWQgRzQgUlNBNDA5NiBTSEEyNTYgVGltZVN0YW1waW5nIENB
 # AhAFRK/zlJ0IOaa/2z9f5WEWMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkD
-# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzIzMTAxMjMzWjAvBgkq
-# hkiG9w0BCQQxIgQgf2vaxoOyUh+wd7TbG+wiGItilQ08P/tCQW982U/GYF8wDQYJ
-# KoZIhvcNAQEBBQAEggIAZMUE1N8AZBJj/BM61p3ZGODvbJ/kGJHNOhBRiXfEthYO
-# 8rpfo7OhoLJuM3Ud4n7uWHYYsLqzbspzSFMbR5TdvwstOOA4eGy93FvoxHjuMwkB
-# WYw5pbZfpgEArSuDO2tmRPHXvciVb6BsHWdPDf5Ro9sQwOaK4jSVOKl8eALFUPcK
-# YAil9yw2/G4Q5W2iy4EQHA17gV+O2rO2k6jCn8F0dDLbcp9kJ19Dt+tWgleSVqGo
-# K5D1LQa+16EIX9HrPG0geMYQrvBUZQsQZjM4X/xK6mJq4ImimxdXvObJg+K37Hz7
-# 3q7d/bC2Xs1quwUK7hiMSRMf1e1ioq2ULaD3yMNBLWe8YSOULLrcDVwfKKpyQ20F
-# +ofT5tmIXsxE0Ve7BowEEOHWzcIDTSDEYwDoSolT5GmV2u+I59FtjsyYyjv3flzB
-# WboU0U+N6pYGXZGZqFAkDLwEsmIl2f2tLvFiSK1TFPPxLP5Q72WdsQI/YLOJ8xPJ
-# 7jwi1EDg2g9pLeYIfGYXZ68vTiTnvjcbmjNVGk4KldVBbBjiTZmJuXRm2URZv0iy
-# 9d84dviwp0uPHHtiian6evUG+ep0gcRmfme+EEKhAbllvjj2ATGhpfPnnDSGcMv/
-# WP0dzk62Ny3hbpjk2mZsCtTeA9Y6EWfkqS94DRO752E3MaaKX5xSCHZ0XUdVvL0=
+# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzI5MTAwNzA3WjAvBgkq
+# hkiG9w0BCQQxIgQgiNfg3W5+EepmN0344yEQbrclk66dKuzZPkQaK4Db0dEwDQYJ
+# KoZIhvcNAQEBBQAEggIAahHc7zXPvOzOz3kgnI5gTbPVa79XoYwkBSbhK64wrmXW
+# tDXEwXQ31dQyz08kg3MdzzPHpdZCXGLErbjJfC95Peqzc4wAFugs7bAByGowWafj
+# nm6NBA7By6KjGif0+aLcnOv2kwt8NJwqxfV0ORSP2L0j8LYsm1Y8hn1xMv98mkKZ
+# /6V9giDy49A4N3zRzqvorHGykkRjiNS8tz2osZMxSlgMbTCSlT35rHLWKaMKUOUB
+# l9DYppLIvnc/2Mudw9NZ52HOr4VICnqjK2nplc7nM2qUge4qJG5tsmFDidhjYgAA
+# 1QItGzxPWNVD/6jjAVjexw7gIx260KXGtI1xJGDGsYOSV022IFE863zRaomIQSZm
+# sAA9CtMRdxV004iCxhu5ktcexzo2JSX4kQd3eUv+p1m4V8IerBQNdibCWGSU7Bn7
+# AgCL0uzoQ2uOFEj7Dw9Yx9YeMQl4O+XZq2YfmdYFrUjlcD+rDSaD6hMZ9Gz8JH/b
+# E6NFhTNXQzzY/eo5hwImpJZ09+SwBEHkXGgnzsXCBgnePwF0UNN67VfObDnJN3Y9
+# x5k4W8sC2IHCWVuUOv0HY7NBDyG77Wo/eZVnFUdnbo+uADKe6x+hexrJIoYTuYfr
+# iNkSb5OFTTcywehtgXSbxc0qZ/qWrYqHvKIZPYfztyG2GWDJJ2DTmRksyKe1de0=
 # SIG # End signature block

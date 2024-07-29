@@ -1,25 +1,26 @@
-. "${NREDF_PATH}\Defaults.ps1"
-. "${NREDF_PATH}\Aliases.ps1"
-if (Test-Path "${PROFILE_PATH}\Aliases.ps1") {
-  . "${PROFILE_PATH}\Aliases.ps1"
+. "$ENV:NREDF_PATH\Defaults.ps1"
+. "$ENV:NREDF_PATH\PSReadLine.ps1"
+. "$ENV:NREDF_PATH\Aliases.ps1"
+if (Test-Path "$ENV:PROFILE_PATH\Aliases.ps1") {
+  . "$ENV:PROFILE_PATH\Aliases.ps1"
 }
-. "${NREDF_PATH}\Modules.ps1"
-if (Test-Path "${PROFILE_PATH}\Modules.ps1") {
-  . "${PROFILE_PATH}\Modules.ps1"
+. "$ENV:NREDF_PATH\Modules.ps1"
+if (Test-Path "$ENV:PROFILE_PATH\Modules.ps1") {
+  . "$ENV:PROFILE_PATH\Modules.ps1"
 }
-Get-ChildItem -Path "${NREDF_PATH}\Functions" -Filter '*.ps1' | ForEach-Object {
+Get-ChildItem -Path "$ENV:NREDF_PATH\Functions" -Filter '*.ps1' | ForEach-Object {
   . $_.FullName
 }
-if (Test-Path "${PROFILE_PATH}\Functions") {
-  Get-ChildItem -Path "${PROFILE_PATH}\Functions" -Filter '*.ps1' | ForEach-Object {
+if (Test-Path "$ENV:PROFILE_PATH\Functions") {
+  Get-ChildItem -Path "$ENV:PROFILE_PATH\Functions" -Filter '*.ps1' | ForEach-Object {
     . $_.FullName
   }
 }
-Get-ChildItem -Path "${NREDF_PATH}\Completions" -Filter '*.ps1' | ForEach-Object {
+Get-ChildItem -Path "$ENV:NREDF_PATH\Completions" -Filter '*.ps1' | ForEach-Object {
   . $_.FullName
 }
-if (Test-Path "${PROFILE_PATH}\Completions") {
-  Get-ChildItem -Path "${PROFILE_PATH}\Completions" -Filter '*.ps1' | ForEach-Object {
+if (Test-Path "$ENV:PROFILE_PATH\Completions") {
+  Get-ChildItem -Path "$ENV:PROFILE_PATH\Completions" -Filter '*.ps1' | ForEach-Object {
     . $_.FullName
   }
 }
@@ -27,8 +28,8 @@ if (Test-Path "${PROFILE_PATH}\Completions") {
 # SIG # Begin signature block
 # MIIbiwYJKoZIhvcNAQcCoIIbfDCCG3gCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhrnstGgYj9n19ZxstEq5Tdcs
-# vpWgghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUo2cj1Euml7yZJJDSyRUb+FXI
+# 09OgghYHMIIC+jCCAeKgAwIBAgIQH0T/prtX9IlFdTpIz4un8DANBgkqhkiG9w0B
 # AQsFADAVMRMwEQYDVQQDDApOUkVERi1QT1NIMB4XDTI0MDcxOTEwMDE0NVoXDTI1
 # MDcxOTEwMjE0NVowFTETMBEGA1UEAwwKTlJFREYtUE9TSDCCASIwDQYJKoZIhvcN
 # AQEBBQADggEPADCCAQoCggEBAOl2MdANwTlf5vc2DArt9tpjFrS2pAvRQDMrTMxx
@@ -149,27 +150,27 @@ if (Test-Path "${PROFILE_PATH}\Completions") {
 # BgNVBAMMCk5SRURGLVBPU0gCEB9E/6a7V/SJRXU6SM+Lp/AwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFOKKmaNJy2QmQOb/tR6s70OAB4jGMA0GCSqGSIb3DQEBAQUABIIBAMMy2f+3
-# YSvd/mA+WupliwYC594xQVVOEBQIusmvPKOsImYO/ULvqzN8EvRrwRDIrv2/OXSp
-# v8Za5LtzVxbAJVA0GVb7RwHFQeVDScaMttjmeNmGWCtnhw5nWb4IDYrJbPGM6Oiz
-# YRcH46/CUPCoJRYI62gqkJVd4mgG/HMhmo9YQd3FBj/vExkMLctAuYdWZjBELqtZ
-# a3C8NwV4ng1I6pR6+m0tQJ9SqnLODzCwguf4TlR4njwjvYT7MCd8g/97K1Nk4niZ
-# 7ODfjri2hwv2wcvHpYDU+G7xEGpPV+i/yvYa6KcdzfmwcVv6dkbrmO9BXCvZIvmx
-# l+bk5/Ve3PFUX4WhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
+# MRYEFHv+q9nYgrKg6y/+kUE8oqLtbNYdMA0GCSqGSIb3DQEBAQUABIIBAJvEaPyZ
+# 1Ft5x6o+G1463NG57IEr1lhZRCgcaozaT4WwZ3cKr7Tp7CoZlTmP3EyrnWvcTrW2
+# UMlROZpS0qcGIOyPFbTU6XUzS3jamo7r0lPAW9HiO62nYOSrY0AVXNm4GEN/LSYx
+# kPHuyeANydNCK1q5W7MIcr4zpnbFO+xHn8HZf7F8HHhd08MGQnfoE18rtqsmQxEf
+# jHs5MzZFQVGC+5eRObnuURBrSoo9X0bZmNVYF6E+rJzqeHNVKZrwIOz6S1siFtrq
+# bIHQKer2uPHG4XtNhH3eorvz8zffMtHlFDUXwOKEY8tPEx78LtMjIb3OJe5IwyXQ
+# 20QWlg7UWhZYc1ihggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEwdzBjMQsw
 # CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOzA5BgNVBAMTMkRp
 # Z2lDZXJ0IFRydXN0ZWQgRzQgUlNBNDA5NiBTSEEyNTYgVGltZVN0YW1waW5nIENB
 # AhAFRK/zlJ0IOaa/2z9f5WEWMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkD
-# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzE5MTYwMzU1WjAvBgkq
-# hkiG9w0BCQQxIgQgGw5vLsLMuhg2Z4RgiMnql1FFbYLB4priXcGPXmYa9NEwDQYJ
-# KoZIhvcNAQEBBQAEggIAeiz/Uc9X6oRvPjU3cXcbodFStFZlN2fE7bxKicV/grw5
-# 0+HqtwXPhJ5uNZoiarATl+29+rL9mDLfbNpz29b6wO1NV9aVTuG9bLS3vaJ1DV0k
-# rKI3wHNNKz35I4Eg4w411E6f42nCGRsp7MGtK4GuDcusUAzAGd7QVu8Z0Fy4aLkI
-# bDqJrXO3fT+Bu9ArH1VvigcJcqVhR/YFFhJuynTXryRTk/B+a4PFkKpsWr7TP52Y
-# HJLil4oWM7i//kFvkdZ1SH6tj8m8asDW5onmZY+g9zxZzyOba+0nC+h45uU25C6Y
-# zUAa+iWOHY8nwNADV8kkczXEPEanAAMgJy4bLFzV2FK3bstvi4QvKiroMu5MvU1M
-# elo/5iSgXGRJdzY5kNycMt+btgip0jcrlfWjCrqhb9g/peB2OtTK2zhQH8FvehdN
-# fUJ4dn7MCkxvaFYEQcimDVp9Ae+Zt40bY1Dlf7WLtSW8C4bTY5ko5kpUuQ6nyY3b
-# 1foZedGmjeeAtQE3Y9ET6eaaG6nBrAdreb7lwdVCR0gN5uA2SnODj3wiMa+gfCIH
-# GcLwEcvP7QnJh8nUYMg3k3tSjjWFwweFPI9jQAjrINT725eRJp0Dll7CmN3XKUVX
-# bEfOWW7ioW5SKmqoMUmnje74snm3o5zFO1DWJH9iQsb/FCynC09GUqnaiu0+l18=
+# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNzI2MDg0NjQ5WjAvBgkq
+# hkiG9w0BCQQxIgQg1H97uWtm/CXFqvpG5+PKFNKu5SiStjJWo+gjBaoP8LMwDQYJ
+# KoZIhvcNAQEBBQAEggIAQQ1BQrEgoPW6u+yZnRJs/duGN+m8yN+Wf7/OBKOuSxVm
+# OOzR3x1rgQWtuIqzAyQRdf0MLRF8abqu3dTSO7ZCBryUsWoqa8CqlBW8yoC0LJx1
+# cOJZtOloiLSkgEPtDCahOVBaKAyMoEVKg4bMbgNA7YlgNwA8QK7xOfsx1pCoGsUw
+# zoI1Re+9cF1pjyW1GVi4lajut2f1Exk+s1XTP4mPH3/OHEYmSJdaskZRsz8YXF9o
+# QWfyK8b0w85285bxHODAx24OWLaOMEHxKI2fr5QLQ/MtKAdTLWQylOMmH+ks/jtu
+# Tv4CiJjVHb/6QwquLyJeRTr3f8m/fHFfeu1u2qv5sqR0lfssIl8ujfKZ5wwYv72j
+# MOpQRHxBdH1DA4bpEthiUcjlRYaCWt24MBChA1BDZApvQ5RkpL2yfWK+u9pGEQLI
+# UgCCubMZPIFCCxGKjc+DrtjG+124Qj7/Sn0DbAFjGkpwgiLan9SJvKOfBFK94eMp
+# bDDKTBRLhDzRKpB+oQlsDP/C2V0NfIuq4MWcKBgEHDFlx7BSnuTMm8xFiuDe2yjQ
+# p7s7Gt+sspcjTbm9jD1ZCsVb8oFoTXkmm46PpUh8L7wO+3SoBJh3Ct4zWA2DKIMo
+# xjN2OLUPthdX4A5MaBzXIhq648pGaQmdNwrRzo7MaCejF4zc+Rt8tCFLjsNbsLw=
 # SIG # End signature block
