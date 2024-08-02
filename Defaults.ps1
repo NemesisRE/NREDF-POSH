@@ -27,7 +27,7 @@ if ($isLinux -or $IsMacOS) {
     $ENV:POSH_THEMES_PATH = "$ENV:XDG_CACHE_HOME/oh-my-posh/themes"
   }
   if ($IsMacOS) {
-    $ENV:POSH_THEMES_PATH = "/usr/local/opt/oh-my-posh/theme"
+    $ENV:POSH_THEMES_PATH = "/usr/local/opt/oh-my-posh/themes"
   }
 }
 
