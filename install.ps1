@@ -15,7 +15,7 @@ if (-not ((Get-Command fzf -ErrorAction SilentlyContinue) -or (Get-Command oh-my
     Exit
   }
 } else {
-  Invoke-Expression "oh-my-posh font install firacode"
+  $null = Invoke-Expression "oh-my-posh font install firacode" -ErrorAction SilentlyContinue
 }
 
 if (-not ((Test-Path "$PROFILE_PATH\NREDF-POSH") -and (git -C "$PROFILE_PATH\NREDF-POSH" rev-parse --is-inside-work-tree 2>&1  $null))) {
