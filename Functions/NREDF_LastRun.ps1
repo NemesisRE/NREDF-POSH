@@ -22,7 +22,7 @@ function NREDF_LastRun {
 
   # Create last run cache directory if it doesn't exist
   if (-not (Test-Path -Path ${ENV:NREDF_LRCACHE})) {
-    New-Item -Path ${ENV:NREDF_LRCACHE} -ItemType Directory
+    New-Item -Path ${ENV:NREDF_LRCACHE} -ItemType Directory -Force
   }
 
   # Define last run file path
