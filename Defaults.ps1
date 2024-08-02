@@ -22,8 +22,13 @@ if ($isLinux -or $IsMacOS) {
   $ENV:XDG_STATE_HOME = "$HOME/.local/state"
   $ENV:NREDF_CACHE = "$ENV:XDG_CACHE_HOME/nredf"
   $ENV:PATH += ";$ENV:XDG_BIN_HOME"
-  $ENV:POSH_THEMES_PATH = "$ENV:XDG_CACHE_HOME/oh-my-posh/themes"
   $ENV:NREDF_LRCACHE = "$ENV:NREDF_CACHE/LRCache"
+  if ($isLinux) {
+    $ENV:POSH_THEMES_PATH = "$ENV:XDG_CACHE_HOME/oh-my-posh/themes"
+  }
+  if ($IsMacOS) {
+    $ENV:POSH_THEMES_PATH = "/usr/local/opt/oh-my-posh/theme"
+  }
 }
 
 # SIG # Begin signature block
