@@ -6,3 +6,6 @@ if ( $isWindows ) {
   Start-Service ssh-agent
   Get-Service ssh-agent
 }
+
+# Add key(s)
+#ssh-add $env:USERPROFILE\.ssh\id_ed25519
