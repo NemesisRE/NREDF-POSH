@@ -11,9 +11,13 @@ if ([string]::IsNullOrEmpty($ENV:POSH_THEME_FILE)) {
   $POSH_THEME_FILE = $ENV:POSH_THEME_FILE
 }
 
-# Set Powershell Theme
 if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+  # Set Powershell Theme
   oh-my-posh init pwsh --config "$ENV:POSH_THEMES_PATH\$POSH_THEME_FILE" | Invoke-Expression
+  if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+    # Upgrade oh-my-posh
+    oh-my-posh upgrade
+  }
 }
 
 # PSFzf settings
