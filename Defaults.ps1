@@ -12,6 +12,9 @@ if ($isWindows) {
   $ENV:NREDF_CACHE = "$ENV:LOCALAPPDATA\nredf"
   $ENV:NREDF_LRCACHE = "$ENV:NREDF_CACHE\LRCache"
   $YAZI_FILE_ONE = "C:\Program Files\Git\usr\bin\file.exe"
+  if (Get-Command -Name python) {
+    $ENV:PATH += "$ENV:LOCALAPPDATA\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\Scripts"
+  }
 }
 
 if ($isLinux -or $IsMacOS) {
