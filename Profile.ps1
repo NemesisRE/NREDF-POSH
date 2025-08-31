@@ -16,18 +16,16 @@ if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
   oh-my-posh init pwsh --config "$ENV:POSH_THEMES_PATH\$POSH_THEME_FILE" | Invoke-Expression
   if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
     # Upgrade oh-my-posh
-    oh-my-posh upgrade --force
+    #oh-my-posh upgrade --force
   }
 }
 
 # PSFzf settings
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
-NREDF_InstallModules $MODULES
+NREDF_InstallModules ${MODULES}
 NREDF_UpdateModule
-
-# Needs to be imported to work
-Import-Module -Name Terminal-Icons
+NREDF_ImportModules ${MODULES}
 
 # SIG # Begin signature block
 # MIIbiwYJKoZIhvcNAQcCoIIbfDCCG3gCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
